@@ -1,4 +1,6 @@
 package airport;
+
+import models.ClassificationLevel;
 import models.MilitaryType;
 import planes.MilitaryPlane;
 import planes.PassengerPlane;
@@ -7,12 +9,33 @@ import planes.ExperimentalPlane;
 
 import java.util.*;
 
+import org.testng.Assert;
+
 // version: 1.1
 // made by Vitali Shulha
 // 4-Jan-2019
 
 public class Airport {
 	private List<? extends Plane> planes;
+
+	public boolean isHasUnclassifiedPlane() {
+		List<ExperimentalPlane> experimentalPlanes = this.getExperimentalPlanes();
+		for (ExperimentalPlane experimentalPlane : experimentalPlanes) {
+			if (experimentalPlane.getClassificationLevel() == ClassificationLevel.UNCLASSIFIED) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public boolean isHasBomber() {
+		List<MilitaryPlane> bomberMilitaryPlanes = this.getBomberMilitaryPlanes();
+		for (MilitaryPlane militaryPlane : bomberMilitaryPlanes) {
+			if ((militaryPlane.getType() == MilitaryType.BOMBER))
+				return true;
+		}
+		return false;
+	}
 
 	public List<PassengerPlane> getPassengerPlanes() {
 		List<? extends Plane> l = this.planes;
@@ -98,6 +121,17 @@ public class Airport {
 			}
 		});
 		return this;
+	}
+
+	public boolean isSortedByMaxLoadCapacity() {
+		for (int i = 0; i < planes.size() - 1; i++) {
+			Plane currentPlane = planes.get(i);
+			Plane nextPlane = planes.get(i + 1);
+			if (currentPlane.getManLoadCapacity() > nextPlane.getManLoadCapacity()) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	public Airport sortByMaxLoadCapacity() {
